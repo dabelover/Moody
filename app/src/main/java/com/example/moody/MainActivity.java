@@ -105,12 +105,12 @@ public class MainActivity extends AppCompatActivity {
                 "weather_condition: " + weatherConditions + " " +
                 "location: " + location + " " +
                 "mood: Tired " + //Recordar implementar el mood
-                "Hazme una pregunta para reconducir mi ánimo hacia estar de mejor humor. Solo puedes hacer una pregunta, elije la más adecuada.";
+                "Hazme una pregunta para reconducir mi ánimo hacia estar de mejor humor. Solo puedes hacer una pregunta, elije la más adecuada. Empieza la respuesta resaltando mi estado de ánimo con el fin de mejorarlo si es triste";
 
         Log.d("MainActivity", message);
 
         Intent intent = new Intent(MainActivity.this, Submit.class);
-        intent.putExtra(message, "message");
+        intent.putExtra("message", message);
         startActivity(intent);
 
     }
