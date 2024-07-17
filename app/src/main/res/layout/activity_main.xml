@@ -32,26 +32,14 @@
 
         </LinearLayout>
 
-        <!-- Steps -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Steps Taken"
-            android:textSize="16sp" />
-        <EditText
-            android:id="@+id/editTextSteps"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="number" />
-
         <!-- Calories Burned -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Calories Burned"
+            android:text="Step Count"
             android:textSize="16sp" />
         <EditText
-            android:id="@+id/editTextCaloriesBurned"
+            android:id="@+id/editTextStepCount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="number" />
@@ -60,27 +48,15 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Distance (km)"
+            android:text="Calorias quemadas"
             android:textSize="16sp" />
         <EditText
-            android:id="@+id/editTextDistanceKm"
+            android:id="@+id/editTextCalories"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="numberDecimal" />
 
         <!-- Active Minutes -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Active Minutes"
-            android:textSize="16sp" />
-        <EditText
-            android:id="@+id/editTextActiveMinutes"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="number" />
-
-        <!-- Sleep Hours -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -90,53 +66,27 @@
             android:id="@+id/editTextSleepHours"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="numberDecimal" />
-
-        <!-- Average Heart Rate -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Average Heart Rate"
-            android:textSize="16sp" />
-        <EditText
-            android:id="@+id/editTextHeartRateAvg"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:inputType="number" />
 
-        <!-- Workout Type -->
+        <!-- Sleep Hours -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Workout Type"
+            android:text="Bool Of Active"
             android:textSize="16sp" />
         <EditText
-            android:id="@+id/editTextWorkoutType"
+            android:id="@+id/editTextBoolOfActive"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:inputType="numberDecimal" />
 
-        <!-- Weather Conditions -->
+        <!-- Sleep Hours -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Weather Conditions"
+            android:id="@+id/textViewResult"
+            android:text="Mood"
             android:textSize="16sp" />
-        <EditText
-            android:id="@+id/editTextWeatherConditions"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <!-- Location -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Location"
-            android:textSize="16sp" />
-        <EditText
-            android:id="@+id/editTextLocation"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
 
         <LinearLayout
             android:layout_width="match_parent"

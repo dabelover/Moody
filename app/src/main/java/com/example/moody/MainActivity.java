@@ -3,25 +3,41 @@ package com.example.moody;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import org.tensorflow.lite.DataType;
+import org.tensorflow.lite.Interpreter;
+import org.tensorflow.lite.support.tensorbuffer.TensorBuffer;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
+import java.util.Calendar;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private Button buttonUser;
     private Button buttonLogout;
-    private EditText editTextSteps, editTextCaloriesBurned, editTextDistanceKm, editTextActiveMinutes,
-            editTextSleepHours, editTextHeartRateAvg, editTextWorkoutType, editTextWeatherConditions, editTextLocation;
+    private EditText editTextStepCount, editTextCalories, editTextSleepHours, editTextBoolOfActive;
     private Button buttonSubmit;
+    private TextView textViewResult;
+    private Interpreter tflite;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -33,8 +49,8 @@ public class MainActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         buttonUser = findViewById(R.id.buttonUser);
-
         buttonLogout = findViewById(R.id.buttonLogout);
+        textViewResult = findViewById(R.id.textViewResult);
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
@@ -59,59 +75,133 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // Inicializar los campos de entrada
-        editTextSteps = findViewById(R.id.editTextSteps);
-        editTextCaloriesBurned = findViewById(R.id.editTextCaloriesBurned);
-        editTextDistanceKm = findViewById(R.id.editTextDistanceKm);
-        editTextActiveMinutes = findViewById(R.id.editTextActiveMinutes);
+        editTextStepCount = findViewById(R.id.editTextStepCount);
+        editTextCalories = findViewById(R.id.editTextCalories);
         editTextSleepHours = findViewById(R.id.editTextSleepHours);
-        editTextHeartRateAvg = findViewById(R.id.editTextHeartRateAvg);
-        editTextWorkoutType = findViewById(R.id.editTextWorkoutType);
-        editTextWeatherConditions = findViewById(R.id.editTextWeatherConditions);
-        editTextLocation = findViewById(R.id.editTextLocation);
-
+        editTextBoolOfActive = findViewById(R.id.editTextBoolOfActive);
         buttonSubmit = findViewById(R.id.buttonSubmit);
+
+        // Cargar el modelo de TensorFlow Lite
+        try {
+            tflite = new Interpreter(loadModelFile());
+        } catch (IOException e) {
+            Log.e("MainActivity", "Error al cargar el modelo: " + e.getMessage());
+        }
 
         buttonSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                submitForm();
+                textViewResult.setText("Procesando...");
+
+                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        submitForm();
+                    }
+                }, 1000);
             }
         });
     }
 
+    private MappedByteBuffer loadModelFile() throws IOException {
+        FileInputStream fileInputStream = new FileInputStream(getAssets().openFd("modelo.tflite").getFileDescriptor());
+        FileChannel fileChannel = fileInputStream.getChannel();
+        long startOffset = getAssets().openFd("modelo.tflite").getStartOffset();
+        long declaredLength = getAssets().openFd("modelo.tflite").getDeclaredLength();
+        return fileChannel.map(FileChannel.MapMode.READ_ONLY, startOffset, declaredLength);
+    }
+
+    private void modelResponse(float steps, float caloriesBurned, float hoursOfSleep, float boolOfActive, float season) {
+        try {
+            // Prepara el buffer de entrada
+            ByteBuffer byteBuffer = ByteBuffer.allocateDirect(4 * 5); // 4 bytes por float, 5 características
+            byteBuffer.order(ByteOrder.nativeOrder());
+            byteBuffer.putFloat(steps);
+            byteBuffer.putFloat(caloriesBurned);
+            byteBuffer.putFloat(hoursOfSleep);
+            byteBuffer.putFloat(boolOfActive);
+            byteBuffer.putFloat(season);
+
+            TensorBuffer inputFeature0 = TensorBuffer.createFixedSize(new int[]{1, 5}, DataType.FLOAT32);
+            inputFeature0.loadBuffer(byteBuffer);
+
+            // Crear el buffer de salida
+            TensorBuffer outputFeature0 = TensorBuffer.createFixedSize(new int[]{1, 3}, DataType.FLOAT32);
+
+            // Ejecutar la inferencia
+            tflite.run(inputFeature0.getBuffer(), outputFeature0.getBuffer().rewind());
+
+            // Manejar la salida
+            float[] output = outputFeature0.getFloatArray();
+            int moodIndex = argmax(output);
+            String mood = interpretMood(moodIndex);
+
+            // Mostrar el resultado
+            textViewResult.setText("Predicted mood: " + mood);
+
+        } catch (Exception e) {
+            Log.e("MainActivity", "Error al ejecutar el modelo: " + e.getMessage());
+        }
+    }
+
+    private int argmax(float[] array) {
+        int maxIndex = -1;
+        float maxValue = Float.NEGATIVE_INFINITY;
+        for (int i = 0; i < array.length; i++) {
+            if (array[i] > maxValue) {
+                maxValue = array[i];
+                maxIndex = i;
+            }
+        }
+        return maxIndex;
+    }
+
+    private String interpretMood(int index) {
+        switch (index) {
+            case 0:
+                return "Sad";
+            case 1:
+                return "Neutral";
+            case 2:
+                return "Happy";
+            default:
+                return "Unknown";
+        }
+    }
+
     private void submitForm() {
         // Capturar los valores ingresados
-        String steps = editTextSteps.getText().toString().trim();
-        String caloriesBurned = editTextCaloriesBurned.getText().toString().trim();
-        String distanceKm = editTextDistanceKm.getText().toString().trim();
-        String activeMinutes = editTextActiveMinutes.getText().toString().trim();
-        String sleepHours = editTextSleepHours.getText().toString().trim();
-        String heartRateAvg = editTextHeartRateAvg.getText().toString().trim();
-        String workoutType = editTextWorkoutType.getText().toString().trim();
-        String weatherConditions = editTextWeatherConditions.getText().toString().trim();
-        String location = editTextLocation.getText().toString().trim();
+        float steps = Float.parseFloat(editTextStepCount.getText().toString().trim());
+        float sleepHours = Float.parseFloat(editTextSleepHours.getText().toString().trim());
+        float calories = Float.parseFloat(editTextCalories.getText().toString().trim());
+        float boolOfActive = Float.parseFloat(editTextBoolOfActive.getText().toString().trim());
 
-        // Aquí puedes manejar los datos como desees, por ejemplo, enviarlos a una API o guardarlos en una base de datos.
-        // Para este ejemplo, simplemente vamos a mostrar un Toast con los datos capturados.
+        // Obtener la fecha actual
+        Date date = new Date();
 
-        String message = "Actúa como coach motivacional, sabiendo como ha ido mi día: " +
-                "steps: " + steps + " " +
-                "calories_burned: " + caloriesBurned + " " +
-                "distance_km: " + distanceKm + " " +
-                "active_minutes: " + activeMinutes + " " +
-                "sleep_hours: " + sleepHours + " " +
-                "heart_rate: " + heartRateAvg + " " +
-                "workout_type: " + workoutType + " " +
-                "weather_condition: " + weatherConditions + " " +
-                "location: " + location + " " +
-                "mood: Tired " + //Recordar implementar el mood
-                "Hazme una pregunta para reconducir mi ánimo hacia estar de mejor humor. Solo puedes hacer una pregunta, elije la más adecuada. Empieza la respuesta resaltando mi estado de ánimo con el fin de mejorarlo si es triste";
+        // Determinar la estación del año
+        Calendar calendar = Calendar.getInstance();
+        int month = calendar.get(Calendar.MONTH);
+        float season;
+        if (month == Calendar.DECEMBER || month == Calendar.JANUARY || month == Calendar.FEBRUARY) {
+            season = 2; // Invierno
+        } else if (month >= Calendar.MARCH && month <= Calendar.MAY) {
+            season = 3; // Primavera
+        } else if (month >= Calendar.JUNE && month <= Calendar.AUGUST) {
+            season = 4; // Verano
+        } else {
+            season = 1; // Otoño
+        }
 
-        Log.d("MainActivity", message);
+        // Llamar a la función que procesa el modelo
+        modelResponse(steps, calories, sleepHours, boolOfActive, season);
+    }
 
-        Intent intent = new Intent(MainActivity.this, Submit.class);
-        intent.putExtra("message", message);
-        startActivity(intent);
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (tflite != null) {
+            tflite.close();
+        }
     }
 }
