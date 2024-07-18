@@ -12,6 +12,7 @@ public class Landing extends AppCompatActivity {
 
     Button buttonManual, buttonSync;
     ImageView imageViewSad, imageViewNeutral, imageViewHappy;
+    String message;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,8 +47,10 @@ public class Landing extends AppCompatActivity {
         imageViewSad.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Landing.this, ChatGptConver.class);
-                intent.putExtra("mood", "sad");
+                message = "Actúa como coach motivacional\nMi estado de ánimo es triste. Dame un consejo sin hacer alusión a que te he preguntado. Debe ser un consejo corto, no te extiendas mucho. ";
+
+                Intent intent = new Intent(Landing.this, Submit.class);
+                intent.putExtra("message", message);
                 startActivity(intent);
             }
         });
@@ -55,8 +58,10 @@ public class Landing extends AppCompatActivity {
         imageViewNeutral.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Landing.this, ChatGptConver.class);
-                intent.putExtra("mood", "neutral");
+                message = "Actúa como coach motivacional\nMi estado de ánimo es neutral. Dame un consejo sin hacer alusión a que te he preguntado. Debe ser un consejo corto, no te extiendas mucho. ";
+
+                Intent intent = new Intent(Landing.this, Submit.class);
+                intent.putExtra("message", message);
                 startActivity(intent);
             }
         });
@@ -64,8 +69,10 @@ public class Landing extends AppCompatActivity {
         imageViewHappy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Landing.this, ChatGptConver.class);
-                intent.putExtra("mood", "happy");
+                message = "Actúa como coach motivacional\nMi estado de ánimo es feliz. Dame un consejo sin hacer alusión a que te he preguntado. Debe ser un consejo corto, no te extiendas mucho. ";
+
+                Intent intent = new Intent(Landing.this, Submit.class);
+                intent.putExtra("message", message);
                 startActivity(intent);
             }
         });

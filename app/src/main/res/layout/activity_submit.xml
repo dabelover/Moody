@@ -5,6 +5,32 @@
     android:orientation="vertical"
     android:padding="16dp">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="12dp">
+
+        <Button
+            android:id="@+id/buttonLogout"
+            android:layout_width="wrap_content"
+            android:layout_height="55dp"
+            android:text="Logout"
+            android:fontFamily="@font/samsungsharpsansbold"
+            android:textColor="#FFFFFF" /> <!-- Asumiendo que tienes un drawable personalizado -->
+
+        <Button
+            android:id="@+id/buttonUser"
+            android:layout_width="wrap_content"
+            android:layout_height="55dp"
+            android:layout_marginLeft="16dp"
+            android:text="User"
+            android:fontFamily="@font/samsungsharpsansbold"
+            android:textColor="#FFFFFF"/> <!-- Asumiendo que tienes un drawable personalizado -->
+
+    </LinearLayout>
+
     <ScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
@@ -12,13 +38,11 @@
         android:layout_weight="1"
         android:padding="16dp">
 
-        <TextView
-            android:id="@+id/tvChatHistory"
+        <LinearLayout
+            android:id="@+id/chatContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#E8E8E8"
-            android:padding="8dp"
-            android:textSize="16sp" />
+            android:orientation="vertical" />
 
     </ScrollView>
 
@@ -34,4 +58,3 @@
         android:layout_height="wrap_content"
         android:text="Send" />
 </LinearLayout>
-

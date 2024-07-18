@@ -3,9 +3,11 @@ package com.example.moody;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.gson.JsonArray;
@@ -22,13 +24,12 @@ import java.io.IOException;
 
 public class Submit extends AppCompatActivity {
 
-    private TextView messageTextView;
-    private TextView tvChatHistory;
+    private LinearLayout chatContainer;
     private EditText etMessage;
     private boolean firstMessage = true;
     private Button btnSend;
     private OkHttpClient client;
-    private static final String API_KEY = "sk-proj-g0CrNharj0YbYxP6Ie4xT3BlbkFJ7IGMsLfAhpy2IJrIscmY"; // Reemplaza con tu API Key
+    private static final String API_KEY = "sk-proj-L1mjXrbel0FCjF6kxgtOT3BlbkFJqZfC3tYzqcXF913fXrvi"; // Reemplaza con tu API Key
     private static final String CHATGPT_API_URL = "https://api.openai.com/v1/chat/completions";
     private String initialMessage;
 
@@ -40,8 +41,7 @@ public class Submit extends AppCompatActivity {
         Intent intent = getIntent();
         initialMessage = intent.getStringExtra("message");
 
-        //Enviar mensaje a OpenAI
-        tvChatHistory = findViewById(R.id.tvChatHistory);
+        chatContainer = findViewById(R.id.chatContainer);
         etMessage = findViewById(R.id.etMessage);
         btnSend = findViewById(R.id.btnSend);
         client = new OkHttpClient();
@@ -55,10 +55,34 @@ public class Submit extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String userMessage = etMessage.getText().toString();
-                tvChatHistory.append("You: " + userMessage + "\n");
+                addMessage("You: " + userMessage, true);
                 sendMessageToChatGPT(userMessage);
+
+                etMessage.setText("");
             }
         });
+    }
+
+    private void addMessage(String message, boolean isUser) {
+        TextView textView = new TextView(this);
+        textView.setText(message);
+        textView.setTextSize(16);
+        textView.setPadding(8, 8, 8, 8);
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        params.setMargins(0, 8, 0, 8);
+
+        if (isUser) {
+            params.gravity = Gravity.END;
+            textView.setBackgroundResource(R.drawable.background_user_message);
+        } else {
+            params.gravity = Gravity.START;
+            textView.setBackgroundResource(R.drawable.background_chatgpt_message);
+        }
+
+        textView.setLayoutParams(params);
+        chatContainer.addView(textView);
     }
 
     private void sendMessageToChatGPT(String message) {
@@ -102,7 +126,7 @@ public class Submit extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            tvChatHistory.append("ChatGPT: " + chatGPTResponse + "\n");
+                            addMessage("Moody: " + chatGPTResponse, false);
                         }
                     });
                 } else {

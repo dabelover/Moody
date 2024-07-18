@@ -103,7 +103,7 @@ public class Login extends AppCompatActivity {
     private void updateUI(FirebaseUser user) {
         if (user != null) {
             // Redirigir a la actividad principal
-            Intent intent = new Intent(Login.this, MainActivity.class);
+            Intent intent = new Intent(Login.this, Landing.class);
             startActivity(intent);
             finish();
         } else {

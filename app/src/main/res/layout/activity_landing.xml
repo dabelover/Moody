@@ -5,6 +5,32 @@
     android:padding="15dp"
     tools:context=".Landing">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="12dp">
+
+        <Button
+            android:id="@+id/buttonLogout"
+            android:layout_width="wrap_content"
+            android:layout_height="55dp"
+            android:text="Logout"
+            android:fontFamily="@font/samsungsharpsansbold"
+            android:textColor="#FFFFFF" /> <!-- Asumiendo que tienes un drawable personalizado -->
+
+        <Button
+            android:id="@+id/buttonUser"
+            android:layout_width="wrap_content"
+            android:layout_height="55dp"
+            android:layout_marginLeft="16dp"
+            android:text="User"
+            android:fontFamily="@font/samsungsharpsansbold"
+            android:textColor="#FFFFFF"/> <!-- Asumiendo que tienes un drawable personalizado -->
+
+    </LinearLayout>
+
     <!-- Asegúrate de tener una imagen adecuada en la carpeta drawable -->
 
     <ImageView
