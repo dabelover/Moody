@@ -1,0 +1,98 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="15dp"
+    tools:context=".Landing">
+
+    <!-- Asegúrate de tener una imagen adecuada en la carpeta drawable -->
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="410dp"
+        android:layout_height="369dp"
+        android:layout_marginTop="20dp"
+        android:src="@drawable/moody_ai" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/imageView"
+        android:layout_centerHorizontal="true"
+        android:fontFamily="@font/samsungsharpsansmedium"
+        android:textAlignment="center"
+        android:layout_marginTop="15dp"
+        android:text="Hola, soy Moody, ¿Cómo ha sido tu día?"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textView"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/buttonManual"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="Introducir datos manual"
+            android:fontFamily="@font/samsungsharpsansbold"
+            android:textColor="#FFFFFF" />
+
+        <Button
+            android:id="@+id/buttonSync"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="Sincronizar reloj Samsung"
+            android:layout_marginLeft="10dp"
+            android:fontFamily="@font/samsungsharpsansbold"
+            android:textColor="#FFFFFF" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textViewManual"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/linearLayout"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
+        android:fontFamily="@font/samsungsharpsans"
+        android:textAlignment="center"
+        android:text="O dime directamente como te encuentras"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="87dp"
+        android:layout_below="@id/textViewManual"
+        android:layout_marginTop="12dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/imageViewSad"
+            android:layout_width="92dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_sad" /> <!-- Ícono de cara triste -->
+
+        <ImageView
+            android:id="@+id/imageViewNeutral"
+            android:layout_width="92dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:src="@drawable/ic_neutral" /> <!-- Ícono de cara neutra -->
+
+        <ImageView
+            android:id="@+id/imageViewHappy"
+            android:layout_width="92dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:src="@drawable/ic_happy" /> <!-- Ícono de cara feliz -->
+    </LinearLayout>
+
+</RelativeLayout>

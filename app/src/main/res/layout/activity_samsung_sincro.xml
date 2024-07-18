@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="15dp"
+    tools:context=".SamsungSincro">
+
+    <!-- Asegúrate de tener una imagen adecuada en la carpeta drawable -->
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="340dp"
+        android:layout_marginTop="20dp"
+        android:src="@drawable/moody_ai" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/imageView"
+        android:layout_centerHorizontal="true"
+        android:fontFamily="@font/samsungsharpsansmedium"
+        android:textAlignment="center"
+        android:layout_marginTop="15dp"
+        android:text="Oh, todavía no tengo esta funcionalidad desarrollada"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textView"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/buttonManual"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="Introducir datos manual"
+            android:fontFamily="@font/samsungsharpsansbold"
+            android:textColor="#FFFFFF"/>
+
+        <Button
+            android:id="@+id/buttonSync"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="Volver"
+            android:layout_marginLeft="10dp"
+            android:fontFamily="@font/samsungsharpsansbold"
+            android:textColor="#FFFFFF"/>
+
+    </LinearLayout>
+</RelativeLayout>

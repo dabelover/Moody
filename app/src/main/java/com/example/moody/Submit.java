@@ -28,7 +28,7 @@ public class Submit extends AppCompatActivity {
     private boolean firstMessage = true;
     private Button btnSend;
     private OkHttpClient client;
-    private static final String API_KEY = "sk-proj-ZEu3gAHwG7uottz10lJDT3BlbkFJkkxLOeFHpnrUfJvWjRJV"; // Reemplaza con tu API Key
+    private static final String API_KEY = "sk-proj-g0CrNharj0YbYxP6Ie4xT3BlbkFJ7IGMsLfAhpy2IJrIscmY"; // Reemplaza con tu API Key
     private static final String CHATGPT_API_URL = "https://api.openai.com/v1/chat/completions";
     private String initialMessage;
 

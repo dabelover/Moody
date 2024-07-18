@@ -8,7 +8,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_marginVertical="32dp"
-        android:padding="16dp">
+        android:padding="16dp"> <!-- Fondo blanco para todo el contenedor -->
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -21,46 +21,57 @@
                 android:id="@+id/buttonLogout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Logout"/>
+                android:text="Logout"
+                android:fontFamily="@font/samsungsharpsansbold"
+                android:textColor="#FFFFFF" /> <!-- Asumiendo que tienes un drawable personalizado -->
 
             <Button
                 android:id="@+id/buttonUser"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
-                android:text="Submit"/>
+                android:text="User"
+                android:fontFamily="@font/samsungsharpsansbold"
+                android:textColor="#FFFFFF"/> <!-- Asumiendo que tienes un drawable personalizado -->
 
         </LinearLayout>
 
-        <!-- Calories Burned -->
+        <!-- Datos del usuario y formularios -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Step Count"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:fontFamily="@font/samsungsharpsansmedium"
+            android:textColor="#333333" /> <!-- Texto más oscuro para mejor lectura -->
+
         <EditText
             android:id="@+id/editTextStepCount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="number" />
+            android:inputType="number"/> <!-- Fondo personalizado para EditText -->
 
-        <!-- Distance in Kilometers -->
+        <!-- Repite el estilo para los demás TextViews y EditTexts -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Calorias quemadas"
-            android:textSize="16sp" />
+            android:text="Calories Burned"
+            android:textSize="16sp"
+            android:fontFamily="@font/samsungsharpsansmedium"
+            android:textColor="#333333" />
+
         <EditText
             android:id="@+id/editTextCalories"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="numberDecimal" />
+            android:inputType="numberDecimal"/>
 
         <!-- Active Minutes -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Sleep Hours"
+            android:fontFamily="@font/samsungsharpsansmedium"
             android:textSize="16sp" />
         <EditText
             android:id="@+id/editTextSleepHours"
@@ -68,25 +79,25 @@
             android:layout_height="wrap_content"
             android:inputType="number" />
 
-        <!-- Sleep Hours -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Bool Of Active"
-            android:textSize="16sp" />
-        <EditText
-            android:id="@+id/editTextBoolOfActive"
+        <Switch
+            android:id="@+id/switchActive"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="numberDecimal" />
+            android:textOn="Sí"
+            android:textOff="No"
+            android:text="¿Has hecho al menos 30 minutos de ejercicio?"
+            android:fontFamily="@font/samsungsharpsansmedium"
+            android:textSize="16sp" />
 
-        <!-- Sleep Hours -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/textViewResult"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/samsungsharpsansmedium"
             android:text="Mood"
             android:textSize="16sp" />
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -94,6 +105,7 @@
             android:orientation="horizontal"
             android:gravity="center"
             android:layout_marginBottom="16dp"
+            android:layout_marginTop="16dp"
             android:padding="16dp">
 
             <Button
@@ -101,10 +113,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
-                android:text="Submit"/>
+                android:text="Predecir Estado"
+                android:fontFamily="@font/samsungsharpsansbold"
+                android:textColor="#FFFFFF"/>
 
         </LinearLayout>
-        <!-- Submit Button -->
-
     </LinearLayout>
 </ScrollView>

@@ -1,6 +1,7 @@
 package com.example.moody;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -9,8 +10,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -36,8 +40,11 @@ public class MainActivity extends AppCompatActivity {
     private Button buttonLogout;
     private EditText editTextStepCount, editTextCalories, editTextSleepHours, editTextBoolOfActive;
     private Button buttonSubmit;
+    private Switch switchActive;
     private TextView textViewResult;
     private Interpreter tflite;
+    private String moodState;
+    private String message;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -78,8 +85,10 @@ public class MainActivity extends AppCompatActivity {
         editTextStepCount = findViewById(R.id.editTextStepCount);
         editTextCalories = findViewById(R.id.editTextCalories);
         editTextSleepHours = findViewById(R.id.editTextSleepHours);
-        editTextBoolOfActive = findViewById(R.id.editTextBoolOfActive);
         buttonSubmit = findViewById(R.id.buttonSubmit);
+
+        // Reemplazamos editTextBoolOfActive con switchActive
+        switchActive = findViewById(R.id.switchActive);
 
         // Cargar el modelo de TensorFlow Lite
         try {
@@ -97,6 +106,13 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         submitForm();
+                    }
+                }, 1000);
+
+                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        menuOptions();
                     }
                 }, 1000);
             }
@@ -138,6 +154,7 @@ public class MainActivity extends AppCompatActivity {
 
             // Mostrar el resultado
             textViewResult.setText("Predicted mood: " + mood);
+            moodState = mood;
 
         } catch (Exception e) {
             Log.e("MainActivity", "Error al ejecutar el modelo: " + e.getMessage());
@@ -174,7 +191,15 @@ public class MainActivity extends AppCompatActivity {
         float steps = Float.parseFloat(editTextStepCount.getText().toString().trim());
         float sleepHours = Float.parseFloat(editTextSleepHours.getText().toString().trim());
         float calories = Float.parseFloat(editTextCalories.getText().toString().trim());
-        float boolOfActive = Float.parseFloat(editTextBoolOfActive.getText().toString().trim());
+        boolean isActive = switchActive.isChecked();  // Obtener el valor booleano directamente
+
+        float boolOfActive;
+
+        if(isActive){
+            boolOfActive = 500;
+        }else{
+            boolOfActive = 0;
+        }
 
         // Obtener la fecha actual
         Date date = new Date();
@@ -193,6 +218,25 @@ public class MainActivity extends AppCompatActivity {
             season = 1; // Otoño
         }
 
+        String estacion;
+
+        if (season == 2) {
+            estacion = "Invierno";
+        } else if (season == 3) {
+            estacion = "Primavera";
+        } else if (season == 4) {
+            estacion = "Verano";
+        } else {
+            estacion = "Otoño";
+        }
+
+        // Construir el mensaje
+        message = "Pasos: " + steps + "\n" +
+                "Calorías quemadas: " + calories + "\n" +
+                "Horas de sueño: " + sleepHours + "\n" +
+                "Estación: " + estacion + "\n" +
+                "¿He hecho 30 minutos de ejercicios durante el día?: " + (isActive ? "Sí" : "No") + ".\n\n";
+
         // Llamar a la función que procesa el modelo
         modelResponse(steps, calories, sleepHours, boolOfActive, season);
     }
@@ -204,4 +248,106 @@ public class MainActivity extends AppCompatActivity {
             tflite.close();
         }
     }
+
+    private void menuOptions() {
+        if(moodState == "Sad"){
+            // Crear el constructor de AlertDialog
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("Parece que no estás en tu mejor momento, necesitas hablar?");  // Mensaje del diálogo
+
+            message = "Actúa como coach motivacional\nMi estado de ánimo es " + moodState +
+                    " y durante el día he hecho todo esto:\n" + message + "Con esta información y sabiendo que me encuentro "
+                    + moodState + ", " +
+                    "¿me puedes hacer una sola pregunta con el objetivo de mejorar mi estado de ánimo, ya sea un consejo o preguntar sobre cómo he dormido?";
+
+            // Definir el botón negativo
+            builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Intent intent = new Intent(MainActivity.this, Submit.class);
+                    intent.putExtra("message", message);
+                    startActivity(intent);
+                }
+            });
+
+            // Definir el botón positivo
+            builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Toast.makeText(MainActivity.this, "Option 2 selected", Toast.LENGTH_SHORT).show();
+                    // Implementa lo que debe hacer cuando se selecciona la opción 2
+                }
+            });
+
+            // Mostrar el diálogo
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        } else if (moodState == "Neutral") {
+            // Crear el constructor de AlertDialog
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("Parece que estás normal. ¿Quieres algún consejo para mejorar?");  // Mensaje del diálogo
+
+            message = "Actúa como coach motivacional\nMi estado de ánimo es " + moodState +
+                    " y durante el día he hecho todo esto:\n" + message + "Con esta información y sabiendo que me encuentro "
+                    + moodState + ", " +
+                    "¿me puedes hacer una sola pregunta con el objetivo de mejorar mi estado de ánimo, ya sea un consejo o preguntar sobre cómo he dormido?";
+
+            // Definir el botón negativo
+            builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Intent intent = new Intent(MainActivity.this, Submit.class);
+                    intent.putExtra("message", message);
+                    startActivity(intent);
+                }
+            });
+
+            // Definir el botón positivo
+            builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Toast.makeText(MainActivity.this, "Option 2 selected", Toast.LENGTH_SHORT).show();
+                    // Implementa lo que debe hacer cuando se selecciona la opción 2
+                }
+            });
+
+            // Mostrar el diálogo
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        } else if (moodState == "Happy") {
+            // Crear el constructor de AlertDialog
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Mood: Happy");  // Título del diálogo
+            builder.setMessage("Parece que estás muy bien. ¿Necesitas algún consejo para poder continuar así?");  // Mensaje del diálogo
+
+            message = "Actúa como coach motivacional\nMi estado de ánimo es " + moodState +
+                    " y durante el día he hecho todo esto:\n" + message + "Con esta información y sabiendo que me encuentro "
+                    + moodState + ", " +
+                    "Con esta información dame un consejo para mejorar mi estado de ánimo." ;
+
+            // Definir el botón negativo
+            builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Intent intent = new Intent(MainActivity.this, Submit.class);
+                    intent.putExtra("message", message);
+                    startActivity(intent);
+                }
+            });
+
+            // Definir el botón positivo
+            builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Toast.makeText(MainActivity.this, "Option 2 selected", Toast.LENGTH_SHORT).show();
+                    // Implementa lo que debe hacer cuando se selecciona la opción 2
+                }
+            });
+
+            // Mostrar el diálogo
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        }
+    }
+
 }
