@@ -37,7 +37,6 @@ public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private Button buttonUser;
-    private Button buttonLogout;
     private EditText editTextStepCount, editTextCalories, editTextSleepHours, editTextBoolOfActive;
     private Button buttonSubmit;
     private Switch switchActive;
@@ -56,7 +55,6 @@ public class MainActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         buttonUser = findViewById(R.id.buttonUser);
-        buttonLogout = findViewById(R.id.buttonLogout);
         textViewResult = findViewById(R.id.textViewResult);
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
@@ -69,17 +67,6 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         }
-
-        buttonLogout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mAuth.signOut();
-                Intent intent = new Intent(MainActivity.this, Login.class);
-                startActivity(intent);
-                finish();
-                Toast.makeText(MainActivity.this, "Logged out successfully.", Toast.LENGTH_SHORT).show();
-            }
-        });
 
         // Inicializar los campos de entrada
         editTextStepCount = findViewById(R.id.editTextStepCount);
@@ -115,6 +102,14 @@ public class MainActivity extends AppCompatActivity {
                         menuOptions();
                     }
                 }, 1000);
+            }
+        });
+
+        buttonUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, UserInfoActivity.class);
+                startActivity(intent);
             }
         });
     }

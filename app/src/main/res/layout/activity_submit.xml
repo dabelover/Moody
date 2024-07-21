@@ -13,15 +13,7 @@
         android:layout_marginBottom="12dp">
 
         <Button
-            android:id="@+id/buttonLogout"
-            android:layout_width="wrap_content"
-            android:layout_height="55dp"
-            android:text="Logout"
-            android:fontFamily="@font/samsungsharpsansbold"
-            android:textColor="#FFFFFF" /> <!-- Asumiendo que tienes un drawable personalizado -->
-
-        <Button
-            android:id="@+id/buttonUser"
+            android:id="@+id/btnUser"
             android:layout_width="wrap_content"
             android:layout_height="55dp"
             android:layout_marginLeft="16dp"

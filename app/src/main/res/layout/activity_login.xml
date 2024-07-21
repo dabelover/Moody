@@ -8,6 +8,13 @@
     android:padding="16dp"
     tools:context=".Login">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Login"
+        android:textAlignment="center"
+        android:textSize="46dp"/>
+
     <EditText
         android:id="@+id/editTextEmail"
         android:layout_width="match_parent"

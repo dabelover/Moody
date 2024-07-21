@@ -8,9 +8,13 @@ import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 public class Landing extends AppCompatActivity {
 
-    Button buttonManual, buttonSync;
+    private FirebaseAuth mAuth;
+    Button buttonManual, buttonSync, buttonUser;
     ImageView imageViewSad, imageViewNeutral, imageViewHappy;
     String message;
 
@@ -21,9 +25,24 @@ public class Landing extends AppCompatActivity {
 
         buttonManual = findViewById(R.id.buttonManual);
         buttonSync = findViewById(R.id.buttonSync);
+        buttonUser = findViewById(R.id.buttonUser);
         imageViewSad = findViewById(R.id.imageViewSad);
         imageViewNeutral = findViewById(R.id.imageViewNeutral);
         imageViewHappy = findViewById(R.id.imageViewHappy);
+
+        // Inicializar Firebase Auth
+        mAuth = FirebaseAuth.getInstance();
+
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser != null) {
+            String email = currentUser.getEmail();
+            buttonUser.setText(email);
+        } else {
+            // Si no hay usuario logueado, redirigir a Login
+            Intent intent = new Intent(this, Login.class);
+            startActivity(intent);
+            finish();
+        }
 
         // Configuración del botón manual para redirigir a MainActivity
         buttonManual.setOnClickListener(new View.OnClickListener() {
@@ -39,6 +58,14 @@ public class Landing extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Landing.this, SamsungSincro.class);
+                startActivity(intent);
+            }
+        });
+
+        buttonUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Landing.this, UserInfoActivity.class);
                 startActivity(intent);
             }
         });

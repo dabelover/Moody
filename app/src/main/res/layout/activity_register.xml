@@ -8,6 +8,13 @@
     android:gravity="center"
     tools:context=".Register">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Registro"
+        android:textAlignment="center"
+        android:textSize="46dp"/>
+
     <EditText
         android:id="@+id/editTextEmail"
         android:layout_width="match_parent"

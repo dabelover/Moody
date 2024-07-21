@@ -1,5 +1,6 @@
 package com.example.moody;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +11,9 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -24,19 +28,23 @@ import java.io.IOException;
 
 public class Submit extends AppCompatActivity {
 
+    private FirebaseAuth mAuth;
     private LinearLayout chatContainer;
     private EditText etMessage;
     private boolean firstMessage = true;
-    private Button btnSend;
+    private Button btnSend, btnUser;
     private OkHttpClient client;
-    private static final String API_KEY = "sk-proj-L1mjXrbel0FCjF6kxgtOT3BlbkFJqZfC3tYzqcXF913fXrvi"; // Reemplaza con tu API Key
     private static final String CHATGPT_API_URL = "https://api.openai.com/v1/chat/completions";
     private String initialMessage;
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_submit);
+
+        // Inicializar Firebase Auth
+        mAuth = FirebaseAuth.getInstance();
 
         Intent intent = getIntent();
         initialMessage = intent.getStringExtra("message");
@@ -44,12 +52,36 @@ public class Submit extends AppCompatActivity {
         chatContainer = findViewById(R.id.chatContainer);
         etMessage = findViewById(R.id.etMessage);
         btnSend = findViewById(R.id.btnSend);
+        btnUser = findViewById(R.id.btnUser);
         client = new OkHttpClient();
 
-        // Enviar el mensaje inicial
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser != null) {
+            String email = currentUser.getEmail();
+            btnUser.setText(email);
+        } else {
+            // Si no hay usuario logueado, redirigir a Login
+            intent = new Intent(Submit.this, Login.class);
+            startActivity(intent);
+            finish();
+        }
+
         if (initialMessage != null && !initialMessage.isEmpty()) {
             sendMessageToChatGPT(initialMessage);
         }
+
+        // Llamar a updateApiKey al abrir la pantalla
+        FirestoreUtil.updateApiKey(new FirestoreUtil.ApiKeyCallback() {
+            @Override
+            public void onApiKeyUpdated(String apiKey) {
+                UserInfoActivity.API_KEY = apiKey;
+            }
+
+            @Override
+            public void onError(Exception e) {
+                // Manejar error
+            }
+        });
 
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,6 +91,14 @@ public class Submit extends AppCompatActivity {
                 sendMessageToChatGPT(userMessage);
 
                 etMessage.setText("");
+            }
+        });
+
+        btnUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Submit.this, UserInfoActivity.class);
+                startActivity(intent);
             }
         });
     }
@@ -103,9 +143,15 @@ public class Submit extends AppCompatActivity {
                 json.toString()
         );
 
+        // Acceder a la API_KEY desde UserInfoActivity
+        String apiKey = UserInfoActivity.API_KEY;
+        if (apiKey == null || apiKey.isEmpty()) {
+            apiKey = "sk-proj-Y0uauXZkKzaytvobqSvRT3BlbkFJMMQb3Z53XDkDjHjTFtES"; // Valor por defecto
+        }
+
         Request request = new Request.Builder()
                 .url(CHATGPT_API_URL)
-                .header("Authorization", "Bearer " + API_KEY)
+                .header("Authorization", "Bearer " + apiKey)
                 .post(body)
                 .build();
 
